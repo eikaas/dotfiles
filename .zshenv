@@ -1,6 +1,6 @@
-export CLOUD="/cloud"
-export IMAGES="${CLOUD}/images"
-export NOTES="${CLOUD}/notes"
-export GOPATH="${CLOUD}"
+export LC_ALL=en_US.UTF-8
+export NOTES="$HOME/Documents/notes"
 export CODE="${GOPATH}/src/github.com/eikaas"
-export PATH="${PATH}:${GOPATH}/bin"
+export GOPATH="$HOME/go"
+export GNUPATH="$(/usr/local/bin/brew --prefix coreutils)/bin"
+export PATH="/usr/local/bin:/usr/local/sbin:${GNUPATH}:${GOPATH}:~/bin:~/.pyenv/shims:${PATH}"

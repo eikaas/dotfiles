@@ -36,18 +36,20 @@ setopt AUTO_NAME_DIRS
 setopt BASH_AUTO_LIST
 setopt CHASE_DOTS
 setopt CHASE_LINKS
-setopt COMPLETE_IN_WORD
+#setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 setopt MAGIC_EQUAL_SUBST
 setopt MULTIBYTE
 setopt NUMERIC_GLOB_SORT
 
+
 # Globbing options
-setopt GLOB_COMPLETE
+#setopt GLOB_COMPLETE
 setopt NUMERIC_GLOB_SORT
-setopt NO_CASE_GLOB
+#setopt NO_CASE_GLOB
 setopt EXTENDEDGLOB
 
+setopt AUTO_PUSHD
 
 ## History wrapper
 function omz_history {
@@ -119,6 +121,8 @@ bindkey -M vicmd "q" push-line
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey -M vicmd 'u' undo
 
+# bindkey '^p'
+
 # commandline completion
 if hash pandoc 2>/dev/null; then
 	eval $(pandoc --bash-completion)
@@ -153,55 +157,25 @@ compinit -C -d "${ZCOMPDUMP}"
 [[ -r "${HOME}/.zsh/hooks" ]] && source "${HOME}/.zsh/hooks"
 autoload -Uz promptinit; promptinit
 
-# Thanks to Sindre Sorhus for the great pure-prompt
-# https://github.com/sindresorhus/pure
-# PURE_GIT_UNTRACKED_DIRTY=0
 # PURE_GIT_DELAY_DIRTY_CHECK=1800
 PURE_GIT_DOWN_ARROW="⇣"
 PURE_GIT_UP_ARROW="⇡"
-PURE_CMD_MAX_EXEC_TIME=1
-PURE_PROMPT_SYMBOL=""
-PURE_PROMPT_VICMD_SYMBOL="ᝰ "
+PURE_CMD_MAX_EXEC_TIME=5
+PURE_PROMPT_SYMBOL="♕"
+PURE_PROMPT_VICMD_SYMBOL="♔"
 PURE_GIT_PULL=0
-
-IMPURE_PROMPT_SSH_SYMBOL=""
-IMPURE_PROMPT_DOCKER_SYMBOL=" "
-# IMPURE_READ_ONLY_PATH_SYMBOL="%F{red} %f"
-declare -A IMPURE_REPLACE_PATH=(
-#	[~]="~ (%F{red}home%f)"
-#	[/]="%F{red}/%f"
-#	[/cloud]="%F{white}/cloud  %f"
-#	[/tmp]="%F{white}/tmp  %f"
-#	[/usr/local/src]="%F{yellow}/usr/local/src%f"
-)
-
-# Map value is prepended to the path if the key matches any part of the pwd
-declare -A IMPURE_PREPEND_PATH=(
-#	[bin]="%F{magenta}"
-#	[eikaas]="%F{yellow}"
-#	[code]="%F{yellow}"
-)
-
-# Map value is appended to the end of the path if the key matches any part of the pwd
- declare -A IMPURE_APPEND_PATH=(
-#	[/home/robin]="%F{green} %f"
-#	[bin]="%F{yellow} %f"
-#	[eikaas]=" %f"
-#	[code]=" %f"
-#	[.git]="%F{purple} %f"
-)
 prompt pure
 
 # Source ~/.alias
 [[ -r "${HOME}/.alias" ]] && source "${HOME}/.alias"
 
 # No delay for normal mode
-KEYTIMEOUT=1
+# KEYTIMEOUT=1
 
 # Set space as the 'leader' key
 bindkey -a -r ' '
 # Open man-page on current command (Leaves command untouched) (Esc+space+m)
-bindkey -a ' 'm run-help
+# bindkey -a ' 'm run-help
 
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
@@ -218,3 +192,6 @@ export PAGER=less
 export MANPAGER=less
 export TERMINAL=xfce4-terminal
 
+base16-manager set ocean
+
+eval "$(pyenv init -)"

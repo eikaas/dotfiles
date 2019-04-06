@@ -68,10 +68,32 @@ rgb() {
 	return 0
 }
 
-say() {
-	local sym="\e[38;5;146m!\e[0m"
-	printf " %5s| %s" "$sym" "$@"
+# spinrun<msg> <command>
+spinrun() {
+	msg="${1:-Say what?}"
+	cmd="${2}"
+	delay=0.15
+
+	declare -a spinner=(✕ ✖ ✗ ✘ ✙ ✚ ✛ ✜ ✝ ✞ ✟ ✠ ✡ ✢ ✣ ✤ ✥ ✦ ✧ ★ ✩ ✪ ✫ ✬ ✭ ✮ ✯ ✰ ✱ ✲ ✳ ✴ ✵ ✶ ✷ ✸ ✹ ✺ ✻ ✼ ✽ ✾ ✿ ❀ ❁ ❂ ❃ ❄ ❅ ❆ ❇ ❈ ❉ ❊ ❋ ● ❍)
+   
+	zmodload zsh/parameter
+
+	if [[ -n "$cmd" ]]; then
+		eval "${cmd}" &
+	fi
+
+	elapsed=0.0
+	while (( ${#jobstates} )); do
+		for ((i=1;i<=${#spinner[@]};i++)); do
+			spn="\e[3$((RANDOM % 8))m${spinner[$i]}\e[0m   "
+			echo -ne "\r $spn \e[0m $msg"
+			sleep ${delay}
+			elapsed=$((elapsed+delay))
+		done
+	done
 }
+
+say() { echo -ne " \e[34;3m:\e[0m\e[2m:\e[0m\e[34m:\e[0m $*\n"; }
 function meatsword() {
 	toilet --rainbow "Here! Take my sword"
 	PURE_PROMPT_SYMBOL="𓂸  "
@@ -164,3 +186,7 @@ boxelm() {
 	EOF
 }
 tm() { [[ -z $TMUX ]] && tmux new -A -s "${SYM_HEART}"; }
+
+fontlist() { 
+	fc-list | awk '{$1=""}1' | cut -d: -f1 | sort| uniq
+}

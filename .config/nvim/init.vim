@@ -3,6 +3,7 @@ function! EnsureVimPlug(vimplug)
 		echo 'vim-plug: Downloading junegunn/vim-plug..'
 		silent !\curl -SLfo ~/.local/share/nvim/site/autoload/plug.vim \
       --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 		return 1
 	endif
 endfunction
@@ -15,17 +16,12 @@ function! RunPlugInstall(condition)
 endfunction
 
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'rodjek/vim-puppet'
-Plug 'ConradIrwin/vim-bracketed-paste'
-Plug 'arthurxavierx/vim-caser'
 Plug 'cespare/vim-toml'
-Plug 'corylanou/vim-present', {'for' : 'present'}
-Plug 'ekalinin/Dockerfile.vim', {'for' : 'Dockerfile'}
-Plug 'elzr/vim-json', {'for' : 'json'}
+Plug 'ekalinin/Dockerfile.vim', { 'for' : 'Dockerfile'}
+Plug 'elzr/vim-json',{ 'for' : 'json'}
 Plug 'ervandew/supertab'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-Plug 'fatih/vim-hclfmt'
-Plug 'fatih/vim-nginx' , {'for' : 'nginx'}
+Plug 'fatih/vim-nginx' , { 'for' : 'nginx'}
 Plug 'godlygeek/tabular'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
@@ -42,8 +38,6 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-scriptease'
 Plug 'tyru/open-browser.vim'
 Plug 'airblade/vim-gitgutter'
-Plug 'tyru/open-browser.vim'
-Plug 'fidian/hexmode'
 call plug#end()
 call RunPlugInstall(EnsureVimPlug(expand('~/.local/share/nvim/site/autoload/plug.vim')))
 
@@ -52,47 +46,57 @@ filetype off
 filetype plugin indent on
 set ttyfast
 set laststatus=2
-set encoding=utf-8              " Set default encoding to UTF-8
-set autoread                    " Automatically reread changed files without asking me anything
+set encoding=utf-8             " Set default encoding to UTF-8
+set autoread                   " Automatically reread changed files without asking me anything
 set autoindent                  
-set backspace=indent,eol,start  " Makes backspace key more powerful.
-set incsearch                   " Shows the match while typing
-set hlsearch                    " Highlight found searches
-set mouse=a                     "Enable mouse mode
-set noerrorbells             " No beeps
-set number                   " Show line numbers
-set showcmd                  " Show me what I'm typing
-set noswapfile               " Don't use swapfile
-set nobackup                 " Don't create annoying backup files
-set splitright               " Split vertical windows right to the current windows
-set splitbelow               " Split horizontal windows below to the current windows
-set autowrite                " Automatically save before :next, :make etc.
+set backspace=indent,eol,start " Makes backspace key more powerful.
+set incsearch                  " Shows the match while typing
+set hlsearch                   " Highlight found searches
+set noerrorbells               " No beeps
+set number                     " Show line numbers
+set showcmd                    " Show me what I'm typing
+set noswapfile                 " Don't use swapfile
+set nobackup                   " Don't create annoying backup files
+set splitright                 " Split vertical windows right to the current windows
+set splitbelow                 " Split horizontal windows below to the current windows
+set autowrite                  " Automatically save before :next, :make etc.
 set hidden
-set fileformats=unix,dos,mac " Prefer Unix over Windows over OS 9 formats
-set noshowmatch              " Do not show matching brackets by flickering
-set noshowmode               " We show the mode with airline or lightline
-set ignorecase               " Search case insensitive...
-set smartcase                " ... but not it begins with upper case 
+set fileformats=unix,dos,mac   " Prefer Unix over Windows over OS 9 formats
+set noshowmatch                " Do not show matching brackets by flickering
+set noshowmode                 " We show the mode with airline or lightline
+set ignorecase                 " Search case insensitive...
+set smartcase                  " ... but not it begins with upper case
 set completeopt=menu,menuone
-set nocursorcolumn           " speed up syntax highlighting
+set nocursorcolumn             " speed up syntax highlighting
 set nocursorline
 set updatetime=300
-set pumheight=10             " Completion window max size
-set conceallevel=2           " Concealed text is completely hidden
-set shortmess+=c   " Shut off completion messages
-set belloff+=ctrlg " If Vim beeps during completion
+set pumheight=10               " Completion window max size
+set conceallevel=2             " Concealed text is completely hidden
+set shortmess+=c               " Shut off completion messages
+set belloff+=ctrlg             " If Vim beeps during completion
 
 set lazyredraw
+
+"http://stackoverflow.com/questions/20186975/vim-mac-how-to-copy-to-clipboard-without-pbcopy
 set clipboard^=unnamed
 set clipboard^=unnamedplus
+
+" increase max memory to show syntax highlighting for large files 
 set maxmempattern=20000
+
+" ~/.viminfo needs to be writable and readable. Set oldfiles to 1000 last
+" recently opened files, :FzfHistory uses it
 set viminfo='1000
 
 if has('persistent_undo')
   set undofile
   set undodir=~/.cache/vim
+  if !isdirectory($HOME . "/.cache/vim")
+    call mkdir($HOME . "/.cache/vim")
+  endif
 endif
 
+" color
 syntax enable
 set t_Co=256
 set background=dark
@@ -103,28 +107,28 @@ colorscheme seoul256
 augroup filetypedetect
   command! -nargs=* -complete=help Help vertical belowright help <args>
   autocmd FileType help wincmd L
+  
   autocmd BufNewFile,BufRead .tmux.conf*,tmux.conf* setf tmux
   autocmd BufNewFile,BufRead .nginx.conf*,nginx.conf* setf nginx
   autocmd BufNewFile,BufRead *.hcl setf conf
-  autocmd BufNewFile,BufRead *.gotmpl set filetype=gotexttmpl
-  autocmd BufNewFile,BufRead *.tmpl set filetype=gotexttmpl
-  autocmd BufNewFile,BufRead *.tpl set filetype=gotexttmpl
-  autocmd BufNewFile,BufRead *.gohtml set filetype=gotexttmpl
+  autocmd BufNewFile,BufRead *.tmpl set noet ts=2 sw=2 filetype=
+  autocmd BufNewFile,BufRead .gotmpl set noet ts=2 sw=2 filetype=gotexttmpl
   autocmd BufNewFile,BufRead *.ino setlocal noet ts=4 sw=4 sts=4
   autocmd BufNewFile,BufRead *.txt setlocal noet ts=4 sw=4
   autocmd BufNewFile,BufRead *.md setlocal noet ts=4 sw=4
-  autocmd BufNewFile,BufRead *.html setlocal noet ts=4 sw=4
+  autocmd BufNewFile,BufRead *.html setlocal noet ts=2 sw=2
   autocmd BufNewFile,BufRead *.vim setlocal expandtab shiftwidth=2 tabstop=2
   autocmd BufNewFile,BufRead *.hcl setlocal expandtab shiftwidth=2 tabstop=2
   autocmd BufNewFile,BufRead *.sh setlocal expandtab shiftwidth=2 tabstop=2
   autocmd BufNewFile,BufRead *.proto setlocal expandtab shiftwidth=2 tabstop=2
-  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
-  autocmd BufNewFile,BufRead *.yaml setlocal expandtab shiftwidth=2 tabstop=2
-  autocmd BufNewFile,BufRead *.yml setlocal expandtab shiftwidth=2 tabstop=2
-  autocmd BufNewFile,BufRead *.json setlocal expandtab shiftwidth=2 tabstop=2
-  autocmd BufNewFile,BufRead *.rb setlocal expandtab shiftwidth=2 tabstop=2
+  
+  autocmd FileType go setlocal noexpandtab tabstop=4 shiftwidth=4
+  autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2
+  autocmd FileType json setlocal expandtab shiftwidth=2 tabstop=2
+  autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
 augroup END
 
+"===================== STATUSLINE ====================
 let s:modes = {
       \ 'n': 'NORMAL', 
       \ 'i': 'INSERT', 
@@ -207,12 +211,11 @@ set statusline+=%#myInfoColor#
 set statusline+=\ %{StatusLineFiletype()}\ %{StatusLinePercent()}\ %l:%v
 set statusline+=\ %*
 
-let mapLeader = " "
-
-" Some useful quickfix shortcuts for quickfix
+"===================== MAPPINGS ======================
+let mapleader = " "
 map <C-n> :cn<CR>
 map <C-m> :cp<CR>
-nnoremap <Leader>a :cclose<CR>
+nnoremap <leader>a :cclose<CR>
 
 " put quickfix window always to the bottom
 augroup quickfix
@@ -228,69 +231,55 @@ autocmd BufEnter * silent! lcd %:p:h
 autocmd VimResized * wincmd =
 
 " Fast saving
-nnoremap <Leader>w :w!<cr>
-nnoremap <silent> <Leader>q :q!<CR>
+nnoremap <leader>w :w!<cr>
+nnoremap <silent> <leader>q :q!<CR>
 
 " Center the screen
-nnoremap <Leader> zz
+nnoremap <leader> zz
 
 " open vim config
-nnoremap <Leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 " source vim config
-nnoremap <Leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
 
 " jump to the next error
 nnoremap <C-e> :cnext<cr>
+
+" Remove search highlight
+" nnoremap <leader><space> :nohlsearch<CR>
+function! s:clear_highlight()
+  let @/ = ""
+  call go#guru#ClearSameIds()
+endfunction
+nnoremap <silent> <leader><space> :<C-u>call <SID>clear_highlight()<CR>
 
 " echo the number under the cursor as binary, useful for bitwise operations
 function! s:echoBinary()
   echo printf("%08b", expand('<cword>'))
 endfunction
-nnoremap <silent> <Leader> gb :<C-u>call <SID>echoBinary()<CR>
+nnoremap <silent> gb :<C-u>call <SID>echoBinary()<CR>
 
 " echo the number under the cursor as hex
 function! s:echoHex()
   echo printf("0x%04X", expand('<cword>'))
 endfunction
-nnoremap <silent> <Leader> gh :<C-u>call <SID>echoHex()<CR>
+nnoremap <silent> gh :<C-u>call <SID>echoHex()<CR>
 
 " Source the current Vim file
-nnoremap <Leader>pr :Runtime<CR>
+nnoremap <leader>pr :Runtime<CR>
 
 " Close all but the current one
-nnoremap <Leader>o :only<CR>
+nnoremap <leader>o :only<CR>
 
 " Better split switching
 map <C-j> <C-W>j
 map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" map <C-h> <C-W>h
+" map <C-l> <C-W>l
 
 " Print full path
 map <C-f> :echo expand("%:p")<cr>
-
-augroup go
-  autocmd!
-  autocmd FileType go nmap <silent> <Leader>v <Plug>(go-def-vertical)
-  autocmd FileType go nmap <silent> <Leader>s <Plug>(go-def-split)
-  autocmd FileType go nmap <silent> <Leader>d <Plug>(go-def-tab)
-  autocmd FileType go nmap <silent> <Leader>x <Plug>(go-doc-vertical)
-  autocmd FileType go nmap <silent> <Leader>i <Plug>(go-info)
-  autocmd FileType go nmap <silent> <Leader>l <Plug>(go-metalinter)
-  autocmd FileType go nmap <silent> <Leader>b :<C-u>call <SID>build_go_files()<CR>
-  autocmd FileType go nmap <silent> <Leader>t  <Plug>(go-test)
-  autocmd FileType go nmap <silent> <Leader>r  <Plug>(go-run)
-  autocmd FileType go nmap <silent> <Leader>e  <Plug>(go-install)
-  autocmd FileType go nmap <silent> <Leader>c <Plug>(go-coverage-toggle)
-augroup END
-
-" search 
-" nmap <C-p> :FzfHistory<cr>
-" imap <C-p> <esc>:<C-u>FzfHistory<cr>
-" nmap <C-b> :FzfFiles<cr>
-" imap <C-b> <esc>:<C-u>FzfFiles<cr>
-noremap <Leader>n :NERDTreeToggle<cr>
 
 " fixes some annoyances
 command! Q q
@@ -304,15 +293,22 @@ cnoreabbrev wQ wq
 cnoreabbrev WQ wq
 cnoreabbrev W w
 cnoreabbrev Q q
-cnoreabbrev qq q
 cnoreabbrev Qall qall
 
-inoremap jk <esc>
+nnoremap <leader>t :tabnew<cr>
+nnoremap <leader>n :tabnext<cr>
+nnoremap <leader>p :tabprev<cr>
 
-nnoremap <Leader>s :setlocal spell! spell?<CR>
+" Visual linewise up and down by default (and use gj gk to go quicker)
+noremap <Up> gk
+noremap <Down> gj
+noremap j gj
+noremap k gk
 
-vnoremap <Leader>gd :GitGutterLineHighlightsToggle<CR>
-nnoremap <Leader>gd :GitGutterLineHighlightsToggle<CR>
+" Exit on j
+imap jj <Esc>
+
+nnoremap <F6> :setlocal spell! spell?<CR>
 
 " Search mappings: These will make it so that going to the next one in a
 " search will center on the line it's found in.
@@ -375,28 +371,26 @@ function! s:create_go_doc_comment()
   execute ":put! z"
   execute ":norm I// \<Esc>$"
 endfunction
-nnoremap <Leader>ui :<C-u>call <SID>create_go_doc_comment()<CR>
+nnoremap <leader>ui :<C-u>call <SID>create_go_doc_comment()<CR>
 
-" ==================== open-browser ====================
 let g:netrw_nogx = 1 " disable netrw's gx mapping.
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
-vnoremap <Leader>gx <Plug>(openbrowser-smart-search)
-nnoremap <Leader>gx <Plug>(openbrowser-smart-search)
 
 " ==================== Fugitive ====================
-vnoremap <Leader>gb :Gblame<CR>
-nnoremap <Leader>gb :Gblame<CR>
+vnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gs :Gstatus<CR>
 
 " ==================== vim-go ====================
-"let g:go_fmt_fail_silently = 0
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
 let g:go_auto_sameids = 0
 let g:go_echo_command_info = 1
-let g:go_gopls_staticcheck = 1
 let g:go_metalinter_command = "gopls"
+let g:go_gopls_staticcheck = 1
+let g:go_diagnostics_enabled = 1
 let g:go_def_mode="gopls"
 let g:go_info_mode="gopls"
 let g:go_highlight_space_tab_error = 1
@@ -408,8 +402,12 @@ let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_format_strings = 1
 let g:go_highlight_function_calls = 0
+let g:go_gocode_propose_source = 1
 let g:go_modifytags_transform = "camelcase"
 let g:go_fold_enable = []
+
+nmap <C-g> :GoDecls<cr>
+imap <C-g> <esc>:<C-u>GoDecls<cr>
 
 " run :GoBuild or :GoTestCompile based on the go file
 function! s:build_go_files()
@@ -420,9 +418,33 @@ function! s:build_go_files()
     call go#cmd#Build(0)
   endif
 endfunction
+
+augroup go
+  autocmd!
+
+  autocmd FileType go nmap <silent> <Leader>v <Plug>(go-def-vertical)
+  autocmd FileType go nmap <silent> <Leader>s <Plug>(go-def-split)
+  autocmd FileType go nmap <silent> <Leader>d <Plug>(go-def-tab)
+  autocmd FileType go nmap <silent> <Leader>x <Plug>(go-doc-vertical)
+  autocmd FileType go nmap <silent> <Leader>i <Plug>(go-info)
+  autocmd FileType go nmap <silent> <Leader>l <Plug>(go-metalinter)
+  autocmd FileType go nmap <silent> <leader>b  :<C-u>call <SID>build_go_files()<CR>
+  autocmd FileType go nmap <silent> <leader>r  <Plug>(go-run)
+  autocmd FileType go nmap <silent> <leader>e  <Plug>(go-install)
+  autocmd FileType go nmap <silent> <Leader>c <Plug>(go-coverage-toggle)
+augroup END
+
 " ==================== FZF ====================
 let g:fzf_command_prefix = 'Fzf'
 let g:fzf_layout = { 'down': '~20%' }
+
+" search 
+nmap <C-p> :FzfHistory<cr>
+imap <C-p> <esc>:<C-u>FzfHistory<cr>
+
+" search across files in the current directory
+nmap <C-b> :FzfFiles<cr>
+imap <C-b> <esc>:<C-u>FzfFiles<cr>
 
 let g:rg_command = '
   \ rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --color "always"
@@ -439,6 +461,8 @@ command! -bang -nargs=* Rg
 command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
 " ==================== NerdTree ====================
+noremap <Leader>n :NERDTreeToggle<cr>
+noremap <Leader>f :NERDTreeFind<cr>
 let NERDTreeShowHidden=1
 
 " ==================== markdown ====================
@@ -477,7 +501,10 @@ else
   let g:gitgutter_sign_column_always = 1
 endif
 
-" Trigger a highlight in the appropriate direction when pressing these keys:
-let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+vnoremap <leader>gd :GitGutterLineHighlightsToggle<CR>
+nnoremap <leader>gd :GitGutterLineHighlightsToggle<CR>
+
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
 " vim: sw=2 sw=2 et

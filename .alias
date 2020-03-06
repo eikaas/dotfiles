@@ -15,6 +15,8 @@ alias ssh="TERM=xterm-256color ssh"
 alias scp="TERM=xterm-256color scp"
 
 # git aliases
+alias gitbrancha='git branch -a'
+alias gitshow='git show $1 --name-only'
 alias gitpush='git push origin master'
 alias gd='git diff --color --no-ext-diff'
 alias gdlast='git diff --color --no-ext-diff @~..@'
@@ -69,3 +71,6 @@ alias 9="cd ~9"
 alias jtc="jotta-cli"
 function o() { ( xdg-open $1 || open $1 ) 2>/dev/null; }
 alias youtube-mp3="youtube-dl -i -c -t --audio-format mp3 --extract-audio --audio-quality 0"
+alias xocker="docker run --rm -it -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix"
+
+vim=nvim

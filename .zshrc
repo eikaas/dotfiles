@@ -1,5 +1,25 @@
 # vim: ft=zsh sw=4 ts=4
 
+export LC_ALL=en_US.UTF-8
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+export BROWSER=firefox
+export EDITOR=vim
+export SYSTEMD_EDITOR=vim
+export PAGER=less
+export MANPAGER=less
+
+export GOPATH="${HOME}/go"
+export CODE="${GOPATH}/src/github.com/eikaas"
+#export GNUPATH="$(/usr/local/bin/brew --prefix coreutils)/bin"
+
+PATH="~/.pyenv/shims:${PATH:+${PATH}:}${HOME}/bin:${GOPATH}/bin"
+
 fpath=(
 	"${HOME}/.zsh/completions"
 	"${HOME}/.zsh/prompts"
@@ -9,13 +29,6 @@ fpath=(
 ZCOMPDUMP="${HOME}/.cache/zsh/.zcompdump"
 
 # Debugging (You might want to turn these off)
-# zmodload zsh/zprof
-# setopt SOURCE_TRACE
-# setopt WARN_CREATE_GLOBAL
-# setopt WARN_NESTED_VAR
-# setopt PRINT_EXIT_VALUE
-# setopt EVAL_LINENO
-
 # Enable ZLE
 setopt ZLE
 
@@ -101,7 +114,7 @@ unsetopt AUTOCD
 [[ -r "${HOME}/.funcs" ]] && source "${HOME}/.funcs"
 
 # Using gpg as ssh agent
-export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+# export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # Enable fzf (pacman -S fzf)
 [[ -r /usr/share/fzf/key-bindings.zsh ]] && \
@@ -174,24 +187,11 @@ prompt pure
 
 # Set space as the 'leader' key
 bindkey -a -r ' '
-# Open man-page on current command (Leaves command untouched) (Esc+space+m)
-# bindkey -a ' 'm run-help
 
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+BASE16_SHELL="$HOME/.config/base16-shell"
+[ -n "$PS1" ] && \
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
 
-export BROWSER=firefox
-export EDITOR=vim
-export SYSTEMD_EDITOR=vim
-export PAGER=less
-export MANPAGER=less
-export TERMINAL=xfce4-terminal
 
-base16-manager set ocean
-
-eval "$(pyenv init -)"
+eval $(ssh-agent -k -s)

@@ -93,7 +93,7 @@ spinrun() {
 	done
 }
 
-say() { echo -ne " \e[34;3m:\e[0m\e[2m:\e[0m\e[34m:\e[0m $*\n"; }
+saywhat() { echo -ne " \e[34;3m:\e[0m\e[2m:\e[0m\e[34m:\e[0m $*\n"; }
 function meatsword() {
 	toilet --rainbow "Here! Take my sword"
 	PURE_PROMPT_SYMBOL="𓂸  "

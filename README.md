@@ -11,8 +11,10 @@
 Dotfiles
 ========
 
-## GNU Stow
-The Makefile contains stow-commands to enable/disable the config files.
+## Dependencies
+* GNU Stow
+* exa
+
 ```bash
 # Create symlinks in $HOME
 make stow
@@ -25,4 +27,3 @@ You can override the stow target by passing `-e TARGET=/tmp/some/path` to the ma
 ```bash
 make -e TARGET=/home/foousr install
 ```
-

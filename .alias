@@ -3,7 +3,6 @@
 # Override default commands
 alias less="less --RAW-CONTROL-CHARS"
 alias tree="tree -C -L 3"
-alias ls="exa -gh --git --binary --color-scale"
 alias cp='cp -v'
 alias mv='mv -v'
 alias rm='rm -v'
@@ -31,7 +30,7 @@ alias gupdatesubm='pull --recurse-submodules && git submodule update --recursive
 alias gundo='git reset --soft HEAD~1'
 
 # Misc 
-wifi_list="nmcli device wifi rescan; nmcli -p -f all device wifi list"
+alias wifi_list="nmcli device wifi rescan; nmcli -p -f all device wifi list"
 alias genpw="base64 <(cat /dev/urandom | head -c 16) | tr -d '=' | tr -d '/'"
 alias ymlchk="python -c 'import yaml,sys;yaml.safe_load(sys.stdin)' 2>/dev/null < $1"
 alias plotline="gnuplot -p -e 'plot \"/dev/stdin\"'"
@@ -49,28 +48,24 @@ alias pwqr="pass show --qrcode $1"
 alias ipshow="ip -4 -brief address show; ip -6 -brief address show"
 alias docker-aur-build="docker run -v $PWD:/pkg docker-aur-builder"
 alias doctl-ls='doctl compute droplet list --format "Name,Image,PublicIPv4,Memory,VCPUs,Disk,Region"'
-alias todo="vim ~/todo.txt"
 alias tn="tmux new-window"
 alias ips="ip -color -pretty -brief addr"
 alias jplhorizons="telnet horizons.jpl.nasa.gov 6775"
 alias stream-rate="pv -at  > /dev/null"
-alias genphrase='for word in $(cat /usr/lib/python3.7/site-packages/electrum/wordlist/english.txt | sort -R|head -n 7); do echo -ne "\e[3$((1 + (RANDOM % 7)));3m${word} "; done'
 alias pho="gphoto2"
 alias tmp="pushd \$(mktemp -d /tmp/trash-XXXX) >/dev/null"
 alias ds="dirs -v | sed -E \"s/(^0)/\x1b[38;5;148m\x1b[38;5;\1m \1\x1b[0m/g\" | sed -E \"s/(^[1-9]+)/ \x1b[38;5;\1m \1\x1b[0m/g\" | tr '\t' ' '"
-alias 0="cd ~1"
-alias 1="cd ~1"
-alias 2="cd ~2"
-alias 3="cd ~3"
-alias 4="cd ~4"
-alias 5="cd ~5"
-alias 6="cd ~6"
-alias 7="cd ~7"
-alias 8="cd ~8"
-alias 9="cd ~9"
 alias jtc="jotta-cli"
 function o() { ( xdg-open $1 || open $1 ) 2>/dev/null; }
 alias youtube-mp3="youtube-dl -i -c -t --audio-format mp3 --extract-audio --audio-quality 0"
 alias xocker="docker run --rm -it -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix"
+alias conv320="lame --preset 320 $*"
+alias vim=nvim
 
-vim=nvim
+if [[ $(uname) == "Darwin" ]]; then
+	alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox"
+	alias ffox="/Applications/Firefox.app/Contents/MacOS/firefox"
+fi
+
+which tree &>/dev/null || alias tree="ls -alHT $*"
+which exa &>/dev/null && alias ls="exa -gh --git --binary --color-scale"

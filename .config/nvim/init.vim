@@ -1,9 +1,7 @@
 function! EnsureVimPlug(vimplug)
 	if !filereadable(a:vimplug)
 		echo 'vim-plug: Downloading junegunn/vim-plug..'
-		silent !\curl -SLfo ~/.local/share/nvim/site/autoload/plug.vim \
-      --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
+		silent !\curl -SLfo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 		return 1
 	endif
 endfunction
@@ -24,12 +22,15 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'fatih/vim-nginx' , { 'for' : 'nginx'}
 Plug 'godlygeek/tabular'
 Plug 'hashivim/vim-hashicorp-tools'
+Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
-Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/seoul256.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'mileszs/ack.vim'
 Plug 'plasticboy/vim-markdown'
+Plug 'mattn/webapi-vim'
+Plug 'mattn/vim-gist'
+Plug 'vim-syntastic/syntastic'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
@@ -38,8 +39,10 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-scriptease'
 Plug 'tyru/open-browser.vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'chrisbra/Colorizer'
 call plug#end()
 call RunPlugInstall(EnsureVimPlug(expand('~/.local/share/nvim/site/autoload/plug.vim')))
+ 
 
 set nocompatible
 filetype off
@@ -74,18 +77,12 @@ set pumheight=10               " Completion window max size
 set conceallevel=2             " Concealed text is completely hidden
 set shortmess+=c               " Shut off completion messages
 set belloff+=ctrlg             " If Vim beeps during completion
-
 set lazyredraw
 
 "http://stackoverflow.com/questions/20186975/vim-mac-how-to-copy-to-clipboard-without-pbcopy
 set clipboard^=unnamed
 set clipboard^=unnamedplus
-
-" increase max memory to show syntax highlighting for large files 
 set maxmempattern=20000
-
-" ~/.viminfo needs to be writable and readable. Set oldfiles to 1000 last
-" recently opened files, :FzfHistory uses it
 set viminfo='1000
 
 if has('persistent_undo')
@@ -99,20 +96,17 @@ endif
 " color
 syntax enable
 set t_Co=256
-set background=dark
-let g:rehash256 = 1
-let g:seoul256_background = 225
-colorscheme seoul256
+colorscheme dracula
 
 augroup filetypedetect
   command! -nargs=* -complete=help Help vertical belowright help <args>
-  autocmd FileType help wincmd L
   
   autocmd BufNewFile,BufRead .tmux.conf*,tmux.conf* setf tmux
   autocmd BufNewFile,BufRead .nginx.conf*,nginx.conf* setf nginx
   autocmd BufNewFile,BufRead *.hcl setf conf
-  autocmd BufNewFile,BufRead *.tmpl set noet ts=2 sw=2 filetype=
-  autocmd BufNewFile,BufRead .gotmpl set noet ts=2 sw=2 filetype=gotexttmpl
+  autocmd BufNewFile,BufRead *.tmpl set noet ts=2 sw=2 filetype=gotexttmpl
+  autocmd BufNewFile,BufRead *.gohtml set noet ts=2 sw=2 filetype=gotexttmpl
+  autocmd BufNewFile,BufRead *.gotmpl set noet ts=2 sw=2 filetype=gotexttmpl
   autocmd BufNewFile,BufRead *.ino setlocal noet ts=4 sw=4 sts=4
   autocmd BufNewFile,BufRead *.txt setlocal noet ts=4 sw=4
   autocmd BufNewFile,BufRead *.md setlocal noet ts=4 sw=4
@@ -121,7 +115,7 @@ augroup filetypedetect
   autocmd BufNewFile,BufRead *.hcl setlocal expandtab shiftwidth=2 tabstop=2
   autocmd BufNewFile,BufRead *.sh setlocal expandtab shiftwidth=2 tabstop=2
   autocmd BufNewFile,BufRead *.proto setlocal expandtab shiftwidth=2 tabstop=2
-  
+  autocmd FileType help wincmd L
   autocmd FileType go setlocal noexpandtab tabstop=4 shiftwidth=4
   autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2
   autocmd FileType json setlocal expandtab shiftwidth=2 tabstop=2
@@ -211,11 +205,17 @@ set statusline+=%#myInfoColor#
 set statusline+=\ %{StatusLineFiletype()}\ %{StatusLinePercent()}\ %l:%v
 set statusline+=\ %*
 
+" Syntastics info
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+
 "===================== MAPPINGS ======================
 let mapleader = " "
 map <C-n> :cn<CR>
 map <C-m> :cp<CR>
-nnoremap <leader>a :cclose<CR>
+nnoremap <leader>a :cclose<CR>:lclose<cr>
 
 " put quickfix window always to the bottom
 augroup quickfix
@@ -243,8 +243,14 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 " source vim config
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
+nnoremap <leader>gl :Gist -l<CR>
+nnoremap <leader>gp :Gist -P<CR>
+
 " jump to the next error
-nnoremap <C-e> :cnext<cr>
+" nnoremap <C-e> :cnext<cr>
+nnoremap <C-e> :lnext<cr>
+nnoremap <C-p> :lprev<cr>
+nnoremap <C-p> :lclose<cr>
 
 " Remove search highlight
 " nnoremap <leader><space> :nohlsearch<CR>
@@ -385,6 +391,7 @@ nnoremap <leader>gs :Gstatus<CR>
 " ==================== vim-go ====================
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
+" let g:go_fmt_fail_silently = 1
 let g:go_auto_type_info = 1
 let g:go_auto_sameids = 0
 let g:go_echo_command_info = 1
@@ -434,31 +441,10 @@ augroup go
   autocmd FileType go nmap <silent> <Leader>c <Plug>(go-coverage-toggle)
 augroup END
 
-" ==================== FZF ====================
-let g:fzf_command_prefix = 'Fzf'
-let g:fzf_layout = { 'down': '~20%' }
-
-" search 
-nmap <C-p> :FzfHistory<cr>
-imap <C-p> <esc>:<C-u>FzfHistory<cr>
-
-" search across files in the current directory
-nmap <C-b> :FzfFiles<cr>
-imap <C-b> <esc>:<C-u>FzfFiles<cr>
-
 let g:rg_command = '
   \ rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --color "always"
   \ -g "*.{js,json,php,md,styl,jade,html,config,py,cpp,c,go,hs,rb,conf}"
   \ -g "!{.git,node_modules,vendor}/*" '
-
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \   <bang>0)
-
-command! -bang -nargs=* F call fzf#vim#grep(g:rg_command .shellescape(<q-args>), 1, <bang>0)
 
 " ==================== NerdTree ====================
 noremap <Leader>n :NERDTreeToggle<cr>
@@ -506,5 +492,19 @@ nnoremap <leader>gd :GitGutterLineHighlightsToggle<CR>
 
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
+
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 1
+let g:syntastic_vim_checkers = ['vint']
+
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_post_private = 1
+
+" highlight SyntasticErrorLine guibg=#9f0000 
+" highlight SyntasticWarnLine guibg=#6f4a00
 
 " vim: sw=2 sw=2 et

@@ -49,17 +49,16 @@ setopt AUTO_NAME_DIRS
 setopt BASH_AUTO_LIST
 setopt CHASE_DOTS
 setopt CHASE_LINKS
-#setopt COMPLETE_IN_WORD
+setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 setopt MAGIC_EQUAL_SUBST
 setopt MULTIBYTE
 setopt NUMERIC_GLOB_SORT
 
-
 # Globbing options
-#setopt GLOB_COMPLETE
+setopt GLOB_COMPLETE
 setopt NUMERIC_GLOB_SORT
-#setopt NO_CASE_GLOB
+setopt NO_CASE_GLOB
 setopt EXTENDEDGLOB
 
 setopt AUTO_PUSHD
@@ -151,7 +150,7 @@ zstyle ':completion:*' cache-path ${_ZSH_CACHE}
 zstyle ':completion:*' completer _expand _complete _ignored
 zstyle ':completion:*' file-sort name
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]} l:|=* r:|=*' 'm:{[:lower:]}={[:upper:]} l:|=* r:|=*' 'm:{[:lower:]}={[:upper:]} l:|=* r:|=*' 'm:{[:lower:]}={[:upper:]} l:|=* r:|=*'
-zstyle ':completion:*' squeeze-slashes true
+zstyle ':completion:*' squeeze-slashes false
 zstyle ':completion::complete:*' gain-privileges 1
 zstyle ':completion:*:*:*:*:processes' menu yes select
 zstyle ':completion:*:*:*:*:processes' force-list always
@@ -174,8 +173,9 @@ autoload -Uz promptinit; promptinit
 PURE_GIT_DOWN_ARROW="⇣"
 PURE_GIT_UP_ARROW="⇡"
 PURE_CMD_MAX_EXEC_TIME=5
-PURE_PROMPT_SYMBOL="♕"
-PURE_PROMPT_VICMD_SYMBOL="♔"
+#             
+PURE_PROMPT_SYMBOL=""
+PURE_PROMPT_VICMD_SYMBOL=""
 PURE_GIT_PULL=0
 prompt pure
 
@@ -194,4 +194,7 @@ BASE16_SHELL="$HOME/.config/base16-shell"
         eval "$("$BASE16_SHELL/profile_helper.sh")"
 
 
-eval $(ssh-agent -k -s)
+eval "$(ssh-agent -s)"
+
+test -e "${HOME}/.zsh/iterm2_shell_integration.zsh" && source "${HOME}/.zsh/iterm2_shell_integration.zsh"
+
